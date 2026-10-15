@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0b111c">
+<title>SvyVPN — тарифы</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap">
+
+<style>
+:root{
+  --bg:        #0b111c;
+  --surface:   #131b2a;
+  --surface-2: #182133;
+  --border:    #222b3f;
+  --border-hi: #313c58;
+
+  --text:      #eef2f9;
+  --text-mut:  #8b95ab;
+  --text-dim:  #5a6480;
+
+  --cyan:      #3ea6ff;
+  --cyan-dim:  #1d4166;
+  --cyan-bg:   #0f2136;
+  --yellow:    #ffc93c;
+
+  --r-sm: 8px;
+  --r:    14px;
+  --r-lg: 18px;
+
+  --ease: cubic-bezier(.22,.61,.36,1);
+
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  color-scheme: dark;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  font-family:"Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-feature-settings: "ss01","cv11","tnum";
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+  min-height: 100dvh;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+svg{display:block}
+::selection{background: var(--cyan); color: var(--bg)}
+
+.app{
+  max-width: 460px;
+  margin-inline: auto;
+  padding: calc(var(--safe-top) + 28px) 20px calc(var(--safe-bottom) + 28px);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ── HEADER ── */
+.header{ display:flex; align-items:center; gap:12px; }
+.brand-mark{ width:38px; height:38px; flex:0 0 auto; }
+.brand-text{ display:flex; flex-direction:column; gap:1px; min-width:0; }
+.brand-name{
+  font-weight:700; font-size:15px; letter-spacing:-.015em;
+  display:flex; align-items:baseline; gap:2px;
+}
+.brand-name em{ font-style:normal; color: var(--cyan); font-size:12px; font-weight:600; }
+.brand-tag{ font-size:12px; color: var(--text-dim); }
+
+/* ── HEAD ── */
+.head{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
+.title{
+  font-size: 28px;
+  letter-spacing: -.035em;
+  font-weight: 700;
+  line-height: 1.05;
+}
+.subtitle{
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text-mut);
+  max-width: 30ch;
+}
+.tail{
+  display:inline-flex; align-items:center; gap:5px;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-weight: 600;
+  padding-bottom: 3px;
+}
+
+/* ── PLANS ── */
+.plans{ display:flex; flex-direction:column; gap: 8px; }
+
+.plan{
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-align: left;
+  transition: border-color .2s var(--ease), background .2s var(--ease), transform .15s var(--ease);
+}
+.plan:hover{ border-color: var(--border-hi); background: var(--surface-2); }
+.plan:active{ transform: scale(.985); }
+
+.plan-left{ display:flex; flex-direction:column; gap:5px; min-width:0; }
+.plan-duration{
+  font-size: 15px; font-weight: 600; letter-spacing: -.01em;
+  display:flex; align-items:center; gap:8px; flex-wrap: wrap;
+}
+.plan-badge{
+  display:inline-flex; align-items:center;
+  padding: 2px 7px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  border-radius: 999px;
+  color: var(--cyan);
+  background: var(--cyan-bg);
+  border: 1px solid var(--cyan-dim);
+}
+.plan-badge.neutral{
+  color: var(--text-mut);
+  background: transparent;
+  border-color: var(--border-hi);
+}
+.plan-per{
+  font-size: 12px; color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.005em;
+}
+
+.plan-right{ display:flex; align-items:center; gap: 12px; }
+.plan-price{
+  display:inline-flex; align-items: baseline; gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.plan-price .n{ font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+.plan-price .s{ font-size: 14px; color: var(--yellow); }
+
+.plan-cta{
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display:grid; place-items:center;
+  background: transparent;
+  border: 1px solid var(--border-hi);
+  color: var(--text-mut);
+  transition: background .2s var(--ease), border-color .2s, color .2s, transform .2s var(--ease);
+}
+.plan:hover .plan-cta{
+  border-color: var(--cyan);
+  color: var(--cyan);
+  transform: translateX(1px);
+}
+
+/* HERO PLAN */
+.plan[data-hero="true"]{
+  border-color: var(--cyan-dim);
+  background: var(--cyan-bg);
+}
+.plan[data-hero="true"]:hover{
+  border-color: var(--cyan);
+  background: var(--cyan-bg);
+}
+.plan[data-hero="true"] .plan-price .n{ font-size: 22px; }
+.plan[data-hero="true"] .plan-cta{
+  border-color: transparent;
+  background: var(--cyan);
+  color: var(--bg);
+}
+.plan[data-hero="true"]:hover .plan-cta{
+  border-color: transparent;
+  color: var(--bg);
+}
+
+/* ── FOOTER ── */
+.footer{
+  margin-top: 4px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.footer a{
+  color: var(--text-mut);
+  display:inline-flex; align-items:center; gap:5px;
+  transition: color .2s;
+}
+.footer a:hover{ color: var(--cyan); }
+
+/* ── TOAST ── */
+.toast{
+  position: fixed;
+  left: 50%; bottom: calc(var(--safe-bottom) + 20px);
+  transform: translate(-50%, 16px);
+  z-index: 100;
+  padding: 11px 16px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  font-size: 13px;
+  color: var(--text);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s, transform .3s var(--ease);
+  max-width: calc(100vw - 32px);
+  text-align: center;
+}
+.toast[data-show="true"]{ opacity: 1; transform: translate(-50%, 0); }
+
+:focus-visible{ outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 6px; }
+
+/* ── REVEAL ── */
+[data-reveal]{
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .55s var(--ease), transform .55s var(--ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal].in{ opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    transition-duration:.01ms!important;
+  }
+  [data-reveal]{ opacity:1!important; transform:none!important; }
+}
+</style>
+</head>
+
+<body>
+
+<main class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M32 4 L56 12 L56 34 C56 47 45 56 32 60 C19 56 8 47 8 34 L8 12 Z"
+            fill="#1a4d8f" stroke="#3ea6ff" stroke-width="1.4" stroke-linejoin="round"/>
+      <path d="M35 17 L22 37 L30 37 L28 51 L42 31 L33 31 Z" fill="#ffc93c"/>
+    </svg>
+    <div class="brand-text">
+      <div class="brand-name">Svy<em>VPN</em></div>
+      <div class="brand-tag">Приватность в один тап</div>
+    </div>
+  </header>
+
+  <!-- PLANS -->
+  <section aria-labelledby="plans-title">
+    <div class="head" data-reveal>
+      <div>
+        <h1 class="title" id="plans-title">Тарифы</h1>
+        <p class="subtitle">Оплата звёздами Telegram. Без автосписаний.</p>
+      </div>
+      <span class="tail">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="#ffc93c" aria-hidden="true"><path d="M12 2l2.9 6.9L22 10l-5.5 5 1.6 7.5L12 18.8 5.9 22.5 7.5 15 2 10l7.1-1.1L12 2z"/></svg>
+        Stars
+      </span>
+    </div>
+
+    <div class="plans" style="margin-top:16px">
+
+      <button class="plan" data-reveal data-months="1" data-stars="100">
+        <div class="plan-left">
+          <div class="plan-duration">1 месяц</div>
+          <div class="plan-per">100 ⭐ в месяц</div>
+        </div>
+        <div class="plan-right">
+          <div class="plan-price"><span class="n">100</span><span class="s">⭐</span></div>
+          <span class="plan-cta" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </span>
+        </div>
+      </button>
+
+      <button class="plan" data-reveal data-months="3" data-stars="250" style="--reveal-delay:50ms">
+        <div class="plan-left">
+          <div class="plan-duration">3 месяца <span class="plan-badge neutral">−17%</span></div>
+          <div class="plan-per">≈ 83 ⭐ в месяц</div>
+        </div>
+        <div class="plan-right">
+          <div class="plan-price"><span class="n">250</span><span class="s">⭐</span></div>
+          <span class="plan-cta" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </span>
+        </div>
+      </button>
+
+      <button class="plan" data-hero="true" data-reveal data-months="12" data-stars="800" style="--reveal-delay:100ms">
+        <div class="plan-left">
+          <div class="plan-duration">12 месяцев <span class="plan-badge">Лучший выбор</span></div>
+          <div class="plan-per">≈ 67 ⭐ в месяц</div>
+        </div>
+        <div class="plan-right">
+          <div class="plan-price"><span class="n">800</span><span class="s">⭐</span></div>
+          <span class="plan-cta" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </span>
+        </div>
+      </button>
+
+    </div>
+  </section>
+
+  <div class="footer" data-reveal style="--reveal-delay:150ms">
+    Вопросы — <a href="#" id="support" rel="noopener">поддержка →</a>
+  </div>
+
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  /* ══════════════════════════════════════════════════════════
+     КОНФИГ
+     - botUrl:  ссылка на бота (для фолбэка и кнопки "поддержка")
+     - invoiceLinks: необязательно, сюда можно положить готовые
+       ссылки от createInvoiceLink (тогда оплата пойдёт прямо
+       в вебке через tg.openInvoice)
+     ══════════════════════════════════════════════════════════ */
+  const CONFIG = {
+    botUrl: 'https://t.me/svyvpn_bot',
+    invoiceLinks: {}
+  };
+
+  // Если бот передал ссылки через query (?l1=&l3=&l12=), подхватываем их
+  try {
+    const p = new URLSearchParams(location.search);
+    if (p.get('l1'))  CONFIG.invoiceLinks['1']  = p.get('l1');
+    if (p.get('l3'))  CONFIG.invoiceLinks['3']  = p.get('l3');
+    if (p.get('l12')) CONFIG.invoiceLinks['12'] = p.get('l12');
+  } catch {}
+
+  /* ══════════════════════════════════════════════════════════
+     TELEGRAM WEBAPP
+     ══════════════════════════════════════════════════════════ */
+  const tg = window.Telegram?.WebApp;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (tg) {
+    try {
+      tg.ready();
+      tg.expand?.();
+      if ('disableVerticalSwipes' in tg) tg.disableVerticalSwipes();
+      tg.setHeaderColor?.('#0b111c');
+      tg.setBackgroundColor?.('#0b111c');
+    } catch {}
+  }
+
+  const haptic = {
+    tap:     () => tg?.HapticFeedback?.impactOccurred?.('light'),
+    success: () => tg?.HapticFeedback?.notificationOccurred?.('success'),
+    warn:    () => tg?.HapticFeedback?.notificationOccurred?.('warning'),
+    err:     () => tg?.HapticFeedback?.notificationOccurred?.('error'),
+  };
+
+  /* ══════════════════════════════════════════════════════════
+     REVEAL (плавное появление элементов)
+     ══════════════════════════════════════════════════════════ */
+  if (!reducedMotion && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+    document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+  } else {
+    document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('in'));
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     TOAST
+     ══════════════════════════════════════════════════════════ */
+  const toastEl = document.getElementById('toast');
+  let toastT;
+  function toast(msg, ttl = 2400) {
+    toastEl.textContent = msg;
+    toastEl.dataset.show = 'true';
+    clearTimeout(toastT);
+    toastT = setTimeout(() => { toastEl.dataset.show = 'false'; }, ttl);
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     PLANS
+     ══════════════════════════════════════════════════════════ */
+  document.querySelectorAll('.plan').forEach(plan => {
+    plan.addEventListener('click', () => {
+      haptic.tap();
+
+      const months = plan.dataset.months;
+      const stars  = plan.dataset.stars;
+      const link   = CONFIG.invoiceLinks[months];
+
+      // Вариант 1: есть готовая invoice-ссылка → платим прямо в вебке
+      if (link && tg?.openInvoice) {
+        tg.openInvoice(link, status => {
+          if (status === 'paid')        { haptic.success(); toast(`Оплачено · ${months} мес`); }
+          else if (status === 'failed') { haptic.err();     toast('Платёж не прошёл'); }
+          else                          { toast('Оплата отменена'); }
+        });
+        return;
+      }
+
+      // Вариант 2 (основной): отправляем выбор боту и закрываем вебку
+      if (tg?.sendData) {
+        const payload = JSON.stringify({ action: 'buy', plan: months, stars: Number(stars) });
+        toast('Открываем оплату…', 1200);
+        // Небольшая задержка, чтобы юзер успел увидеть тост
+        setTimeout(() => {
+          try { tg.sendData(payload); }
+          catch (e) { haptic.err(); toast('Не удалось открыть оплату'); }
+        }, 220);
+        return;
+      }
+
+      // Вариант 3: открыто вне Telegram (например, в обычном браузере)
+      haptic.warn();
+      toast('Откройте бота, чтобы оформить подписку');
+    });
+  });
+
+  /* ══════════════════════════════════════════════════════════
+     SUPPORT
+     ══════════════════════════════════════════════════════════ */
+  document.getElementById('support')?.addEventListener('click', e => {
+    e.preventDefault();
+    haptic.tap();
+    const url = CONFIG.botUrl;
+    if (tg?.openTelegramLink) tg.openTelegramLink(url);
+    else window.open(url, '_blank', 'noopener');
+  });
+})();
+</script>
+</body>
+</html>
