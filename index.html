@@ -66,7 +66,7 @@ svg{display:block}
   padding: calc(var(--safe-top) + 28px) 20px calc(var(--safe-bottom) + 28px);
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
 }
 
 /* ── HEADER ── */
@@ -104,8 +104,56 @@ svg{display:block}
   padding-bottom: 3px;
 }
 
+/* ── TRIAL ── */
+.trial{
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: var(--r-lg);
+  border: 1px dashed var(--cyan-dim);
+  background: linear-gradient(180deg, rgba(62,166,255,.06), rgba(62,166,255,.02));
+  text-align: left;
+  transition: border-color .2s var(--ease), background .2s var(--ease), transform .15s var(--ease);
+}
+.trial:hover{
+  border-color: var(--cyan);
+  background: linear-gradient(180deg, rgba(62,166,255,.12), rgba(62,166,255,.04));
+}
+.trial:active{ transform: scale(.985); }
+
+.trial-icon{
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  display: grid; place-items: center;
+  color: var(--cyan);
+  background: var(--cyan-bg);
+  border: 1px solid var(--cyan-dim);
+}
+
+.trial-text{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+.trial-title{
+  font-size: 15px; font-weight: 700; letter-spacing: -.01em;
+  color: var(--text);
+}
+.trial-sub{
+  font-size: 12px; color: var(--text-dim); letter-spacing: -.005em;
+}
+
+.trial-cta{
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--cyan);
+  color: var(--bg);
+  transition: transform .2s var(--ease);
+}
+.trial:hover .trial-cta{ transform: translateX(2px); }
+
 /* ── PLANS ── */
-.plans{ display:flex; flex-direction:column; gap: 8px; }
+.plans{ display:flex; flex-direction:column; gap: 8px; margin-top: 16px; }
 
 .plan{
   position: relative;
@@ -264,6 +312,28 @@ svg{display:block}
     </div>
   </header>
 
+  <!-- TRIAL -->
+  <section data-reveal>
+    <button class="trial" id="trial-btn" type="button">
+      <span class="trial-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"/>
+          <path d="M2 7h20v5H2z"/>
+          <path d="M12 22V7"/>
+          <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+          <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+        </svg>
+      </span>
+      <span class="trial-text">
+        <span class="trial-title">Попробовать бесплатно</span>
+        <span class="trial-sub">1 день без оплаты — без карты и обязательств</span>
+      </span>
+      <span class="trial-cta" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </span>
+    </button>
+  </section>
+
   <!-- PLANS -->
   <section aria-labelledby="plans-title">
     <div class="head" data-reveal>
@@ -277,7 +347,7 @@ svg{display:block}
       </span>
     </div>
 
-    <div class="plans" style="margin-top:16px">
+    <div class="plans">
 
       <button class="plan" data-reveal data-months="1" data-stars="100">
         <div class="plan-left">
@@ -335,14 +405,10 @@ svg{display:block}
 
   /* ══════════════════════════════════════════════════════════
      КОНФИГ
-     - botUrl:  ссылка на бота (для фолбэка и кнопки "поддержка")
-     - invoiceLinks: необязательно, сюда можно положить готовые
-       ссылки от createInvoiceLink (тогда оплата пойдёт прямо
-       в вебке через tg.openInvoice)
      ══════════════════════════════════════════════════════════ */
   const CONFIG = {
     botUrl: 'https://t.me/svyvpn_bot',
-    invoiceLinks: {}
+    invoiceLinks: {}   // опционально: {"1": "https://t.me/$...", ...}
   };
 
   // Если бот передал ссылки через query (?l1=&l3=&l12=), подхватываем их
@@ -377,7 +443,7 @@ svg{display:block}
   };
 
   /* ══════════════════════════════════════════════════════════
-     REVEAL (плавное появление элементов)
+     REVEAL
      ══════════════════════════════════════════════════════════ */
   if (!reducedMotion && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
@@ -406,6 +472,38 @@ svg{display:block}
   }
 
   /* ══════════════════════════════════════════════════════════
+     ОТПРАВКА ДАННЫХ БОТУ
+     ВАЖНО: tg.sendData() вызывается СИНХРОННО,
+     без setTimeout — иначе Telegram игнорирует вызов.
+     ══════════════════════════════════════════════════════════ */
+  function sendToBot(payload, fallbackMsg) {
+    if (!tg?.sendData) {
+      haptic.warn();
+      toast(fallbackMsg);
+      return false;
+    }
+    try {
+      tg.sendData(JSON.stringify(payload));
+      return true;
+    } catch (e) {
+      haptic.err();
+      toast('Не удалось отправить запрос');
+      return false;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     TRIAL
+     ══════════════════════════════════════════════════════════ */
+  document.getElementById('trial-btn')?.addEventListener('click', () => {
+    haptic.tap();
+    sendToBot(
+      { action: 'trial' },
+      'Откройте бота, чтобы активировать пробный период'
+    );
+  });
+
+  /* ══════════════════════════════════════════════════════════
      PLANS
      ══════════════════════════════════════════════════════════ */
   document.querySelectorAll('.plan').forEach(plan => {
@@ -427,20 +525,10 @@ svg{display:block}
       }
 
       // Вариант 2 (основной): отправляем выбор боту и закрываем вебку
-      if (tg?.sendData) {
-        const payload = JSON.stringify({ action: 'buy', plan: months, stars: Number(stars) });
-        toast('Открываем оплату…', 1200);
-        // Небольшая задержка, чтобы юзер успел увидеть тост
-        setTimeout(() => {
-          try { tg.sendData(payload); }
-          catch (e) { haptic.err(); toast('Не удалось открыть оплату'); }
-        }, 220);
-        return;
-      }
-
-      // Вариант 3: открыто вне Telegram (например, в обычном браузере)
-      haptic.warn();
-      toast('Откройте бота, чтобы оформить подписку');
+      sendToBot(
+        { action: 'buy', plan: months, stars: Number(stars) },
+        'Откройте бота, чтобы оформить подписку'
+      );
     });
   });
 
