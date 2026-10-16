@@ -3,37 +3,44 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<meta name="theme-color" content="#0b111c">
+<meta name="theme-color" content="#0a0e18">
 <title>SvyVPN — тарифы</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
 
 <style>
 :root{
-  --bg:        #0b111c;
-  --surface:   #131b2a;
-  --surface-2: #182133;
-  --border:    #222b3f;
-  --border-hi: #313c58;
+  --bg:        #0a0e18;
+  --bg-2:      #0d121e;
+  --surface:   #111827;
+  --surface-2: #16202f;
+  --surface-3: #1a2438;
+  --border:    #1e2a3e;
+  --border-hi: #2a3a55;
 
-  --text:      #eef2f9;
-  --text-mut:  #8b95ab;
-  --text-dim:  #5a6480;
+  --text:      #f0f4fc;
+  --text-mut:  #8a94a8;
+  --text-dim:  #5a6580;
 
-  --cyan:      #3ea6ff;
-  --cyan-dim:  #1d4166;
-  --cyan-bg:   #0f2136;
+  --accent:      #3ea6ff;
+  --accent-2:    #5cb8ff;
+  --accent-dim:  #1d4166;
+  --accent-bg:   #0e1f33;
+  --accent-glow: rgba(62,166,255,.35);
+
   --yellow:    #ffc93c;
+  --green:     #4ade80;
 
   --r-sm: 8px;
   --r:    14px;
-  --r-lg: 18px;
+  --r-lg: 20px;
 
   --ease: cubic-bezier(.22,.61,.36,1);
+  --ease-bounce: cubic-bezier(.34,1.56,.64,1);
 
   --safe-top:    env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -42,11 +49,16 @@
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
 html,body{min-height:100%}
 body{
   font-family:"Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   font-feature-settings: "ss01","cv11","tnum";
   background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 900px 600px at 50% -10%, rgba(62,166,255,.15), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 100%, rgba(62,166,255,.06), transparent 60%);
+  background-attachment: fixed;
   color: var(--text);
   font-size: 16px;
   line-height: 1.45;
@@ -58,50 +70,76 @@ body{
 }
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 svg{display:block}
-::selection{background: var(--cyan); color: var(--bg)}
+::selection{background: var(--accent); color: var(--bg)}
+
+/* Иконка звезды (вместо emoji ⭐) */
+.ico-star{
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: -0.14em;
+  flex: 0 0 auto;
+  color: var(--yellow);
+  filter: drop-shadow(0 0 6px rgba(255,201,60,.35));
+}
 
 .app{
   max-width: 460px;
   margin-inline: auto;
-  padding: calc(var(--safe-top) + 28px) 20px calc(var(--safe-bottom) + 28px);
+  padding: calc(var(--safe-top) + 24px) 20px calc(var(--safe-bottom) + 32px);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 22px;
 }
 
 /* ── HEADER ── */
-.header{ display:flex; align-items:center; gap:12px; }
-.brand-mark{ width:38px; height:38px; flex:0 0 auto; }
+.header{
+  display:flex; align-items:center; gap:12px;
+  padding: 4px 0;
+}
+.brand-mark{
+  width:42px; height:42px; flex:0 0 auto;
+  filter: drop-shadow(0 4px 14px rgba(62,166,255,.4));
+}
 .brand-text{ display:flex; flex-direction:column; gap:1px; min-width:0; }
 .brand-name{
-  font-weight:700; font-size:15px; letter-spacing:-.015em;
+  font-weight:800; font-size:16px; letter-spacing:-.02em;
   display:flex; align-items:baseline; gap:2px;
 }
-.brand-name em{ font-style:normal; color: var(--cyan); font-size:12px; font-weight:600; }
-.brand-tag{ font-size:12px; color: var(--text-dim); }
+.brand-name em{ font-style:normal; color: var(--accent); font-size:13px; font-weight:700; }
+.brand-tag{ font-size:12px; color: var(--text-dim); letter-spacing:-.005em; }
 
 /* ── HEAD ── */
-.head{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
+.head{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; padding-top: 4px; }
 .title{
-  font-size: 28px;
-  letter-spacing: -.035em;
-  font-weight: 700;
+  font-size: 30px;
+  letter-spacing: -.04em;
+  font-weight: 800;
   line-height: 1.05;
+  background: linear-gradient(180deg, #fff, #b8c4dc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .subtitle{
-  margin-top: 6px;
+  margin-top: 7px;
   font-size: 13px;
   color: var(--text-mut);
   max-width: 30ch;
+  letter-spacing: -.005em;
 }
 .tail{
-  display:inline-flex; align-items:center; gap:5px;
+  display:inline-flex; align-items:center; gap:6px;
   font-size: 11px;
-  letter-spacing: .14em;
+  letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--text-dim);
-  font-weight: 600;
-  padding-bottom: 3px;
+  font-weight: 700;
+  padding-bottom: 5px;
+}
+.tail .ico-star{
+  width: 11px; height: 11px;
+  filter: none;
 }
 
 /* ── TRIAL ── */
@@ -113,29 +151,41 @@ svg{display:block}
   gap: 14px;
   padding: 16px 18px;
   border-radius: var(--r-lg);
-  border: 1px dashed var(--cyan-dim);
-  background: linear-gradient(180deg, rgba(62,166,255,.06), rgba(62,166,255,.02));
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(135deg, var(--accent-dim), var(--border-hi)) border-box;
   text-align: left;
-  transition: border-color .2s var(--ease), background .2s var(--ease), transform .15s var(--ease);
+  transition: transform .15s var(--ease), box-shadow .25s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+.trial::before{
+  content:'';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(400px 80px at 20% 0%, rgba(62,166,255,.08), transparent 70%);
+  pointer-events: none;
 }
 .trial:hover{
-  border-color: var(--cyan);
-  background: linear-gradient(180deg, rgba(62,166,255,.12), rgba(62,166,255,.04));
+  transform: translateY(-1px);
+  box-shadow: 0 10px 30px -10px rgba(62,166,255,.35);
 }
 .trial:active{ transform: scale(.985); }
 
 .trial-icon{
-  width: 40px; height: 40px;
-  border-radius: 12px;
+  width: 44px; height: 44px;
+  border-radius: 13px;
   display: grid; place-items: center;
-  color: var(--cyan);
-  background: var(--cyan-bg);
-  border: 1px solid var(--cyan-dim);
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-dim);
+  position: relative; z-index: 1;
 }
 
-.trial-text{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+.trial-text{ display:flex; flex-direction:column; gap:3px; min-width:0; position: relative; z-index: 1; }
 .trial-title{
-  font-size: 15px; font-weight: 700; letter-spacing: -.01em;
+  font-size: 15px; font-weight: 700; letter-spacing: -.015em;
   color: var(--text);
 }
 .trial-sub{
@@ -143,17 +193,19 @@ svg{display:block}
 }
 
 .trial-cta{
-  width: 30px; height: 30px;
+  width: 32px; height: 32px;
   border-radius: 50%;
   display: grid; place-items: center;
-  background: var(--cyan);
-  color: var(--bg);
-  transition: transform .2s var(--ease);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  transition: transform .25s var(--ease-bounce);
+  box-shadow: 0 4px 14px -2px var(--accent-glow);
+  position: relative; z-index: 1;
 }
-.trial:hover .trial-cta{ transform: translateX(2px); }
+.trial:hover .trial-cta{ transform: translateX(3px); }
 
 /* ── PLANS ── */
-.plans{ display:flex; flex-direction:column; gap: 8px; margin-top: 16px; }
+.plans{ display:flex; flex-direction:column; gap: 10px; margin-top: 14px; }
 
 .plan{
   position: relative;
@@ -166,120 +218,179 @@ svg{display:block}
   border: 1px solid var(--border);
   background: var(--surface);
   text-align: left;
-  transition: border-color .2s var(--ease), background .2s var(--ease), transform .15s var(--ease);
+  transition:
+    border-color .2s var(--ease),
+    background .2s var(--ease),
+    transform .15s var(--ease),
+    box-shadow .25s var(--ease);
+  overflow: hidden;
 }
-.plan:hover{ border-color: var(--border-hi); background: var(--surface-2); }
-.plan:active{ transform: scale(.985); }
+.plan:hover{
+  border-color: var(--border-hi);
+  background: var(--surface-2);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 32px -16px rgba(0,0,0,.6);
+}
+.plan:active{ transform: scale(.99); }
 
-.plan-left{ display:flex; flex-direction:column; gap:5px; min-width:0; }
+.plan-left{ display:flex; flex-direction:column; gap:6px; min-width:0; }
 .plan-duration{
-  font-size: 15px; font-weight: 600; letter-spacing: -.01em;
+  font-size: 15px; font-weight: 700; letter-spacing: -.015em;
   display:flex; align-items:center; gap:8px; flex-wrap: wrap;
+  color: var(--text);
 }
 .plan-badge{
   display:inline-flex; align-items:center;
-  padding: 2px 7px;
-  font-size: 10px; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 8px;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: .06em; text-transform: uppercase;
   border-radius: 999px;
-  color: var(--cyan);
-  background: var(--cyan-bg);
-  border: 1px solid var(--cyan-dim);
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-dim);
 }
 .plan-badge.neutral{
-  color: var(--text-mut);
-  background: transparent;
-  border-color: var(--border-hi);
+  color: var(--green);
+  background: rgba(74,222,128,.08);
+  border-color: rgba(74,222,128,.25);
 }
 .plan-per{
   font-size: 12px; color: var(--text-dim);
   font-variant-numeric: tabular-nums;
   letter-spacing: -.005em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.plan-per .ico-star{
+  width: 11px; height: 11px;
+  filter: none;
+  opacity: .85;
 }
 
 .plan-right{ display:flex; align-items:center; gap: 12px; }
 .plan-price{
-  display:inline-flex; align-items: baseline; gap: 6px;
+  display:inline-flex; align-items: center; gap: 6px;
   font-variant-numeric: tabular-nums;
 }
-.plan-price .n{ font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
-.plan-price .s{ font-size: 14px; color: var(--yellow); }
+.plan-price .n{
+  font-size: 21px; font-weight: 800; letter-spacing: -.03em;
+  color: var(--text);
+  line-height: 1;
+}
+.plan-price .ico-star{
+  width: 15px; height: 15px;
+  opacity: .95;
+}
 
 .plan-cta{
-  width: 32px; height: 32px;
+  width: 34px; height: 34px;
   border-radius: 50%;
   display:grid; place-items:center;
   background: transparent;
   border: 1px solid var(--border-hi);
   color: var(--text-mut);
-  transition: background .2s var(--ease), border-color .2s, color .2s, transform .2s var(--ease);
+  transition: background .2s var(--ease), border-color .2s, color .2s, transform .2s var(--ease-bounce);
 }
 .plan:hover .plan-cta{
-  border-color: var(--cyan);
-  color: var(--cyan);
-  transform: translateX(1px);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateX(2px);
 }
 
 /* HERO PLAN */
 .plan[data-hero="true"]{
-  border-color: var(--cyan-dim);
-  background: var(--cyan-bg);
+  border-color: transparent;
+  background:
+    linear-gradient(180deg, rgba(62,166,255,.10), rgba(62,166,255,.03)) padding-box,
+    linear-gradient(135deg, var(--accent-dim), var(--accent), var(--accent-dim)) border-box;
+  border: 1.5px solid transparent;
+  box-shadow:
+    0 0 0 1px rgba(62,166,255,.08),
+    0 20px 40px -20px rgba(62,166,255,.35);
+}
+.plan[data-hero="true"]::before{
+  content:'';
+  position: absolute;
+  top: -50%; right: -30%;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(62,166,255,.18), transparent 70%);
+  pointer-events: none;
 }
 .plan[data-hero="true"]:hover{
-  border-color: var(--cyan);
-  background: var(--cyan-bg);
+  box-shadow:
+    0 0 0 1px rgba(62,166,255,.15),
+    0 25px 50px -20px rgba(62,166,255,.5);
 }
-.plan[data-hero="true"] .plan-price .n{ font-size: 22px; }
+.plan[data-hero="true"] .plan-price .n{ font-size: 24px; }
+.plan[data-hero="true"] .plan-price .ico-star{ width: 17px; height: 17px; }
 .plan[data-hero="true"] .plan-cta{
   border-color: transparent;
-  background: var(--cyan);
-  color: var(--bg);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  box-shadow: 0 4px 16px -2px var(--accent-glow);
 }
 .plan[data-hero="true"]:hover .plan-cta{
   border-color: transparent;
-  color: var(--bg);
+  color: #fff;
 }
 
 /* ── FOOTER ── */
 .footer{
-  margin-top: 4px;
+  margin-top: 6px;
   text-align: center;
   font-size: 12px;
   color: var(--text-dim);
+  letter-spacing: -.005em;
 }
 .footer a{
   color: var(--text-mut);
-  display:inline-flex; align-items:center; gap:5px;
+  display:inline-flex; align-items:center; gap:6px;
   transition: color .2s;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
 }
-.footer a:hover{ color: var(--cyan); }
+.footer a:hover{
+  color: var(--accent);
+  border-color: var(--accent-dim);
+  background: var(--accent-bg);
+}
+.footer svg{
+  opacity: .9;
+}
 
 /* ── TOAST ── */
 .toast{
   position: fixed;
-  left: 50%; bottom: calc(var(--safe-bottom) + 20px);
-  transform: translate(-50%, 16px);
+  left: 50%; bottom: calc(var(--safe-bottom) + 24px);
+  transform: translate(-50%, 20px);
   z-index: 100;
-  padding: 11px 16px;
+  padding: 12px 18px;
   border-radius: 999px;
-  background: var(--surface-2);
+  background: rgba(22,32,47,.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-hi);
   font-size: 13px;
+  font-weight: 500;
   color: var(--text);
   opacity: 0;
   pointer-events: none;
-  transition: opacity .25s, transform .3s var(--ease);
+  transition: opacity .25s, transform .35s var(--ease);
   max-width: calc(100vw - 32px);
   text-align: center;
+  box-shadow: 0 12px 32px -8px rgba(0,0,0,.6);
 }
 .toast[data-show="true"]{ opacity: 1; transform: translate(-50%, 0); }
 
-:focus-visible{ outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 6px; }
+:focus-visible{ outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
 
 /* ── REVEAL ── */
 [data-reveal]{
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(12px);
   transition: opacity .55s var(--ease), transform .55s var(--ease);
   transition-delay: var(--reveal-delay, 0ms);
 }
@@ -302,9 +413,19 @@ svg{display:block}
   <!-- HEADER -->
   <header class="header">
     <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+      <defs>
+        <linearGradient id="shieldGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1f5fa8"/>
+          <stop offset="100%" stop-color="#0d3a72"/>
+        </linearGradient>
+        <linearGradient id="boltGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffd76b"/>
+          <stop offset="100%" stop-color="#ffb800"/>
+        </linearGradient>
+      </defs>
       <path d="M32 4 L56 12 L56 34 C56 47 45 56 32 60 C19 56 8 47 8 34 L8 12 Z"
-            fill="#1a4d8f" stroke="#3ea6ff" stroke-width="1.4" stroke-linejoin="round"/>
-      <path d="M35 17 L22 37 L30 37 L28 51 L42 31 L33 31 Z" fill="#ffc93c"/>
+            fill="url(#shieldGrad)" stroke="#3ea6ff" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M35 17 L22 37 L30 37 L28 51 L42 31 L33 31 Z" fill="url(#boltGrad)"/>
     </svg>
     <div class="brand-text">
       <div class="brand-name">Svy<em>VPN</em></div>
@@ -316,7 +437,7 @@ svg{display:block}
   <section data-reveal>
     <button class="trial" id="trial-btn" type="button">
       <span class="trial-icon" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"/>
           <path d="M2 7h20v5H2z"/>
           <path d="M12 22V7"/>
@@ -329,7 +450,7 @@ svg{display:block}
         <span class="trial-sub">1 день без оплаты — без карты и обязательств</span>
       </span>
       <span class="trial-cta" aria-hidden="true">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </span>
     </button>
   </section>
@@ -339,51 +460,92 @@ svg{display:block}
     <div class="head" data-reveal>
       <div>
         <h1 class="title" id="plans-title">Тарифы</h1>
-        <p class="subtitle">Оплата звёздами Telegram. Без автосписаний.</p>
+        <p class="subtitle">Оплата звёздами Telegram. Без автосписаний и карт.</p>
       </div>
       <span class="tail">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="#ffc93c" aria-hidden="true"><path d="M12 2l2.9 6.9L22 10l-5.5 5 1.6 7.5L12 18.8 5.9 22.5 7.5 15 2 10l7.1-1.1L12 2z"/></svg>
+        <svg class="ico-star" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2 L14.6 9.1 L22 9.6 L16.2 14.2 L18.2 21.2 L12 17.3 L5.8 21.2 L7.8 14.2 L2 9.6 L9.4 9.1 Z" fill="currentColor"/>
+        </svg>
         Stars
       </span>
     </div>
 
     <div class="plans">
 
-      <button class="plan" data-reveal data-months="1" data-stars="100">
+      <button class="plan" data-reveal data-months="1" data-stars="70">
         <div class="plan-left">
           <div class="plan-duration">1 месяц</div>
-          <div class="plan-per">100 ⭐ в месяц</div>
+          <div class="plan-per">
+            <span>70</span>
+            <svg class="ico-star" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2 L14.6 9.1 L22 9.6 L16.2 14.2 L18.2 21.2 L12 17.3 L5.8 21.2 L7.8 14.2 L2 9.6 L9.4 9.1 Z" fill="currentColor"/>
+            </svg>
+            <span>в месяц</span>
+          </div>
         </div>
         <div class="plan-right">
-          <div class="plan-price"><span class="n">100</span><span class="s">⭐</span></div>
+          <div class="plan-price">
+            <span class="n">70</span>
+            <svg class="ico-star" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2 L14.6 9.1 L22 9.6 L16.2 14.2 L18.2 21.2 L12 17.3 L5.8 21.2 L7.8 14.2 L2 9.6 L9.4 9.1 Z" fill="currentColor"/>
+            </svg>
+          </div>
           <span class="plan-cta" aria-hidden="true">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </span>
         </div>
       </button>
 
-      <button class="plan" data-reveal data-months="3" data-stars="250" style="--reveal-delay:50ms">
+      <button class="plan" data-reveal data-months="3" data-stars="180" style="--reveal-delay:60ms">
         <div class="plan-left">
-          <div class="plan-duration">3 месяца <span class="plan-badge neutral">−17%</span></div>
-          <div class="plan-per">≈ 83 ⭐ в месяц</div>
+          <div class="plan-duration">
+            <span>3 месяца</span>
+            <span class="plan-badge neutral">Выгода 14%</span>
+          </div>
+          <div class="plan-per">
+            <span>≈ 60</span>
+            <svg class="ico-star" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2 L14.6 9.1 L22 9.6 L16.2 14.2 L18.2 21.2 L12 17.3 L5.8 21.2 L7.8 14.2 L2 9.6 L9.4 9.1 Z" fill="currentColor"/>
+            </svg>
+            <span>в месяц</span>
+          </div>
         </div>
         <div class="plan-right">
-          <div class="plan-price"><span class="n">250</span><span class="s">⭐</span></div>
+          <div class="plan-price">
+            <span class="n">180</span>
+            <svg class="ico-star" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2 L14.6 9.1 L22 9.6 L16.2 14.2 L18.2 21.2 L12 17.3 L5.8 21.2 L7.8 14.2 L2 9.6 L9.4 9.1 Z" fill="currentColor"/>
+            </svg>
+          </div>
           <span class="plan-cta" aria-hidden="true">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </span>
         </div>
       </button>
 
-      <button class="plan" data-hero="true" data-reveal data-months="12" data-stars="800" style="--reveal-delay:100ms">
+      <button class="plan" data-hero="true" data-reveal data-months="12" data-stars="550" style="--reveal-delay:120ms">
         <div class="plan-left">
-          <div class="plan-duration">12 месяцев <span class="plan-badge">Лучший выбор</span></div>
-          <div class="plan-per">≈ 67 ⭐ в месяц</div>
+          <div class="plan-duration">
+            <span>12 месяцев</span>
+            <span class="plan-badge">Выгода 35%</span>
+          </div>
+          <div class="plan-per">
+            <span>≈ 46</span>
+            <svg class="ico-star" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2 L14.6 9.1 L22 9.6 L16.2 14.2 L18.2 21.2 L12 17.3 L5.8 21.2 L7.8 14.2 L2 9.6 L9.4 9.1 Z" fill="currentColor"/>
+            </svg>
+            <span>в месяц</span>
+          </div>
         </div>
         <div class="plan-right">
-          <div class="plan-price"><span class="n">800</span><span class="s">⭐</span></div>
+          <div class="plan-price">
+            <span class="n">550</span>
+            <svg class="ico-star" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2 L14.6 9.1 L22 9.6 L16.2 14.2 L18.2 21.2 L12 17.3 L5.8 21.2 L7.8 14.2 L2 9.6 L9.4 9.1 Z" fill="currentColor"/>
+            </svg>
+          </div>
           <span class="plan-cta" aria-hidden="true">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </span>
         </div>
       </button>
@@ -391,8 +553,14 @@ svg{display:block}
     </div>
   </section>
 
-  <div class="footer" data-reveal style="--reveal-delay:150ms">
-    Вопросы — <a href="#" id="support" rel="noopener">поддержка →</a>
+  <!-- FOOTER / SUPPORT -->
+  <div class="footer" data-reveal style="--reveal-delay:180ms">
+    <a href="#" id="support" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      Чат поддержки
+    </a>
   </div>
 
 </main>
@@ -407,11 +575,12 @@ svg{display:block}
      КОНФИГ
      ══════════════════════════════════════════════════════════ */
   const CONFIG = {
-    botUrl: 'https://t.me/svyvpn_bot',
-    invoiceLinks: {}   // опционально: {"1": "https://t.me/$...", ...}
+    botUrl:     'https://t.me/svyvpn_bot',
+    supportUrl: 'https://t.me/DRDFNS',   // поддержка @DRDFNS
+    invoiceLinks: {}                     // опционально: {"1": "https://t.me/$...", ...}
   };
 
-  // Если бот передал ссылки через query (?l1=&l3=&l12=), подхватываем их
+  // Если бот передал invoice-ссылки через query (?l1=&l3=&l12=), подхватываем
   try {
     const p = new URLSearchParams(location.search);
     if (p.get('l1'))  CONFIG.invoiceLinks['1']  = p.get('l1');
@@ -430,8 +599,8 @@ svg{display:block}
       tg.ready();
       tg.expand?.();
       if ('disableVerticalSwipes' in tg) tg.disableVerticalSwipes();
-      tg.setHeaderColor?.('#0b111c');
-      tg.setBackgroundColor?.('#0b111c');
+      tg.setHeaderColor?.('#0a0e18');
+      tg.setBackgroundColor?.('#0a0e18');
     } catch {}
   }
 
@@ -473,8 +642,8 @@ svg{display:block}
 
   /* ══════════════════════════════════════════════════════════
      ОТПРАВКА ДАННЫХ БОТУ
-     ВАЖНО: tg.sendData() вызывается СИНХРОННО,
-     без setTimeout — иначе Telegram игнорирует вызов.
+     ВАЖНО: tg.sendData() вызывается СИНХРОННО, без setTimeout —
+     иначе Telegram игнорирует вызов.
      ══════════════════════════════════════════════════════════ */
   function sendToBot(payload, fallbackMsg) {
     if (!tg?.sendData) {
@@ -533,12 +702,12 @@ svg{display:block}
   });
 
   /* ══════════════════════════════════════════════════════════
-     SUPPORT
+     SUPPORT → @DRDFNS
      ══════════════════════════════════════════════════════════ */
   document.getElementById('support')?.addEventListener('click', e => {
     e.preventDefault();
     haptic.tap();
-    const url = CONFIG.botUrl;
+    const url = CONFIG.supportUrl;
     if (tg?.openTelegramLink) tg.openTelegramLink(url);
     else window.open(url, '_blank', 'noopener');
   });
